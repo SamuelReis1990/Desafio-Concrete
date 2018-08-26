@@ -15,7 +15,7 @@ namespace DesafioConcrete.Infra.Mapeamentos
             Property(t => t.DDD).HasColumnName("ddd").IsOptional();
             Property(t => t.Numero).HasColumnName("numero").IsOptional();
 
-            HasRequired(t => t.Usuario).WithMany(m => m.Telefone).HasForeignKey(f => f.UsuarioId);
+            HasRequired(t => t.Usuario).WithMany(m => m.Telefones).HasForeignKey(f => f.UsuarioId);
         }
     }
 }

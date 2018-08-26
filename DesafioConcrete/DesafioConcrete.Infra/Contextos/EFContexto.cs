@@ -20,7 +20,7 @@ namespace DesafioConcrete.Infra.Contextos
             modelBuilder.Configurations.Add(new TelefoneMap());
 
             base.OnModelCreating(modelBuilder);            
-        }        
+        }
     }
 
     public class ContextoInicializador : DropCreateDatabaseIfModelChanges<EFContexto>

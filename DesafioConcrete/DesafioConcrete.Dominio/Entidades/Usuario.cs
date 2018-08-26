@@ -10,8 +10,9 @@ namespace DesafioConcrete.Dominio.Entidades
             Id = Guid.NewGuid().ToString();
             Token = Guid.NewGuid().ToString();
             DataCriacao = DateTime.Now;
+            DataAtualizacao = DateTime.Now;
             UltimoLogin = DateTime.Now;
-            Telefone = new List<Telefone>();
+            Telefones = new List<Telefone>();
         }
 
         public string Id { get; set; }        
@@ -23,6 +24,6 @@ namespace DesafioConcrete.Dominio.Entidades
         public DateTime UltimoLogin { get; set; }
         public string Token { get; set; }
 
-        public ICollection<Telefone> Telefone { get; set; }
+        public ICollection<Telefone> Telefones { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace DesafioConcrete.Tests.Controllers
             // Organizar                          
 
             // Agir
-            IQueryable result = _repositorioUsuario.GetAll();
+            var result = _repositorioUsuario.GetAll();
 
             // Declarar
             Assert.IsNotNull(result);

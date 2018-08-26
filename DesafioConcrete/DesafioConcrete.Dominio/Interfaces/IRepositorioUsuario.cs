@@ -4,6 +4,6 @@ namespace DesafioConcrete.Dominio.Interfaces
 {
     public interface IRepositorioUsuario : IRepositorioBase<Usuario>
     {
-
+        
     }
 }

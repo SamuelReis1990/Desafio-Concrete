@@ -8,12 +8,12 @@ namespace DesafioConcrete.Dominio.Entidades
         {
             Id = Guid.NewGuid().ToString();
         }
-
+        
         public string Id { get; set; }
         public string UsuarioId { get; set; }
         public int Numero { get; set; }
         public int DDD { get; set; }
-
+        
         public Usuario Usuario { get; set; }
     }
 }
