@@ -17,7 +17,7 @@ namespace DesafioConcrete.API.Controllers
     {
         private readonly IRepositorioUsuario _repositorioUsuario;
         private readonly IRepositorioTelefone _repositorioTelefone;
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -26,18 +26,20 @@ namespace DesafioConcrete.API.Controllers
         public UsuariosController(IRepositorioUsuario repositorioUsuario, IRepositorioTelefone repositorioTelefone)
         {
             _repositorioUsuario = repositorioUsuario;
-            _repositorioTelefone = repositorioTelefone;            
+            _repositorioTelefone = repositorioTelefone;
         }
 
-        private static RetornoSingUpViewModel RetornoSingUp(RetornoUsuarioViewModel usuarioRetorno, int statusCode = 200, string mensagem = "OK")
+        private static RetornoViewModel Retorno(RetornoUsuarioViewModel usuarioRetorno, int statusCode = 200, string mensagem = "OK")
         {
-            return new RetornoSingUpViewModel
+            return new RetornoViewModel
             {
                 StatusCode = statusCode.ToString(),
                 Mensagem = mensagem,
                 Usuario = usuarioRetorno
             };
         }
+
+        #region SingUp
 
         /// <summary>
         /// Cadastrar Usuário
@@ -51,20 +53,20 @@ namespace DesafioConcrete.API.Controllers
         /// <response code="500">Internal Server Error</response>
         /// <returns></returns>
         [HttpPost, Route("singUp")]
-        public RetornoSingUpViewModel SingUp([FromBody] UsuarioViewModel model)
+        public RetornoViewModel SingUp([FromBody] UsuarioViewModel model)
         {
             try
             {
                 model = model ?? new UsuarioViewModel();
 
-                if (String.IsNullOrEmpty(model.Nome) && String.IsNullOrEmpty(model.Email) && String.IsNullOrEmpty(model.Senha) && !model.Telefones.Any())
+                if (String.IsNullOrEmpty(model.Nome) && String.IsNullOrEmpty(model.Email) && String.IsNullOrEmpty(model.Senha))
                 {
-                    return RetornoSingUp(null, (int)StatusCodeEnum.BadRequest, StatusCodeEnum.BadRequest.ToString());
+                    return Retorno(null, (int)StatusCodeEnum.BadRequest, StatusCodeEnum.BadRequest.ToString());
                 }
 
                 if (_repositorioUsuario.VerificaExisteEmailCadastrado(model.Email))
                 {
-                    return RetornoSingUp(null, (int)StatusCodeEnum.Conflict, StatusCodeEnum.Conflict.ToString() + ": E-mail já existente!");
+                    return Retorno(null, (int)StatusCodeEnum.Conflict, StatusCodeEnum.Conflict.ToString() + ": E-mail já existente!");
                 }
                 else
                 {
@@ -76,10 +78,10 @@ namespace DesafioConcrete.API.Controllers
                         {
                             DDD = int.Parse(telefone.DDD),
                             Numero = int.Parse(telefone.Numero),
-                            UsuarioId = usuarioModel.Id                            
+                            UsuarioId = usuarioModel.Id
                         });
                     }
-                    
+
                     var retornoCommit = _repositorioUsuario.Cadastrar(usuarioModel);
 
                     if (String.IsNullOrEmpty(retornoCommit))
@@ -101,18 +103,101 @@ namespace DesafioConcrete.API.Controllers
                             Token = usuarioModel.Token
                         };
 
-                        return RetornoSingUp(retorno, (int)StatusCodeEnum.Created, StatusCodeEnum.Created.ToString() + ": Usuário cadastrado com sucesso!");
+                        return Retorno(retorno, (int)StatusCodeEnum.Created, StatusCodeEnum.Created.ToString() + ": Usuário cadastrado com sucesso!");
                     }
                     else
                     {
-                        return RetornoSingUp(null, (int)StatusCodeEnum.BadRequest, StatusCodeEnum.BadRequest.ToString() + ": " + retornoCommit);
+                        return Retorno(null, (int)StatusCodeEnum.BadRequest, StatusCodeEnum.BadRequest.ToString() + ": " + retornoCommit);
                     }
                 }
             }
             catch (Exception e)
             {
-                return RetornoSingUp(null, (int)StatusCodeEnum.InternalServerError, StatusCodeEnum.InternalServerError.ToString() + ": " + e.Message);
+                return Retorno(null, (int)StatusCodeEnum.InternalServerError, StatusCodeEnum.InternalServerError.ToString() + ": " + e.Message);
             }
-        }       
+        }
+
+        #endregion
+
+        #region Login
+
+        /// <summary>
+        /// Login Usuário
+        /// </summary>
+        /// <param name="model"></param>
+        /// <remarks>Método para login de usuário</remarks>
+        /// <response code="200">OK</response>              
+        /// <response code="400">Bad Request</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="404">Not Found</response>        
+        /// <response code="500">Internal Server Error</response>
+        /// <returns></returns>
+        [HttpPut, Route("login")]
+        public RetornoViewModel Login([FromBody] LoginViewModel model)
+        {
+            try
+            {
+                model = model ?? new LoginViewModel();
+
+                if (String.IsNullOrEmpty(model.Email) && String.IsNullOrEmpty(model.Senha))
+                {
+                    return Retorno(null, (int)StatusCodeEnum.BadRequest, StatusCodeEnum.BadRequest.ToString());
+                }
+
+                if (!_repositorioUsuario.VerificaExisteEmailCadastrado(model.Email))
+                {
+                    return Retorno(null, (int)StatusCodeEnum.NotFound, StatusCodeEnum.NotFound.ToString() + ": Usuário e/ou senha inválidos!");
+                }
+                else
+                {
+                    if (!_repositorioUsuario.VerificaSenhaCadastrada(model.Email, Utilitarios.CriptografarMD5(model.Senha)))
+                    {
+                        return Retorno(null, (int)StatusCodeEnum.Unauthorized, StatusCodeEnum.Unauthorized.ToString() + ": Usuário e/ou senha inválidos!");
+                    }
+                    else
+                    {
+                        var usuarioRetorno = _repositorioUsuario.RecuperarUsuario(model.Email);
+                        var telefonesRetorno = _repositorioTelefone.RecuperarTelefones(usuarioRetorno.Id);
+
+                        usuarioRetorno.UltimoLogin = DateTime.Now;
+                        usuarioRetorno.DataAtualizacao = DateTime.Now;
+
+                        var retornoCommit = _repositorioUsuario.Atualizar(usuarioRetorno);
+
+                        if (String.IsNullOrEmpty(retornoCommit))
+                        {
+                            RetornoUsuarioViewModel retorno = new RetornoUsuarioViewModel()
+                            {
+                                Nome = usuarioRetorno.Nome,
+                                Email = usuarioRetorno.Email,
+                                Senha = usuarioRetorno.Senha,
+                                Telefones = telefonesRetorno.Select(t => new TelefoneViewModel
+                                {
+                                    DDD = t.DDD.ToString(),
+                                    Numero = t.Numero.ToString()
+                                }).ToList(),
+                                Id = usuarioRetorno.Id,
+                                DataCriacao = usuarioRetorno.DataCriacao,
+                                DataAtualizacao = usuarioRetorno.DataAtualizacao,
+                                UltimoLogin = usuarioRetorno.UltimoLogin,
+                                Token = usuarioRetorno.Token
+                            };
+
+                            return Retorno(retorno, (int)StatusCodeEnum.OK, StatusCodeEnum.OK.ToString() + ": Usuário logado com sucesso!");
+                        }
+                        else
+                        {
+                            return Retorno(null, (int)StatusCodeEnum.BadRequest, StatusCodeEnum.BadRequest.ToString() + ": " + retornoCommit);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return Retorno(null, (int)StatusCodeEnum.InternalServerError, StatusCodeEnum.InternalServerError.ToString() + ": " + e.Message);
+            }
+        }
+
+        #endregion
     }
 }

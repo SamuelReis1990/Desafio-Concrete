@@ -1,18 +1,28 @@
-﻿using DesafioConcrete.Dominio.Interfaces;
+﻿using DesafioConcrete.Dominio.Entidades;
+using DesafioConcrete.Dominio.Interfaces;
 using DesafioConcrete.Infra.Contextos;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace DesafioConcrete.Infra.Repositorios
 {
     public class RepositorioBase<TEntidade> : IRepositorioBase<TEntidade> where TEntidade : class
-    {
-        public IEnumerable<TEntidade> GetAll()
+    {        
+        public Usuario RecuperarUsuario(string email)
         {
             using (var db = new EFContexto())
             {
-                return db.Set<TEntidade>();
+                return db.Usuario.Where(u => u.Email.Equals(email)).FirstOrDefault();
+            }
+        }
+
+        public IEnumerable<Telefone> RecuperarTelefones(string id)
+        {
+            using (var db = new EFContexto())
+            {
+                return db.Telefones.Where(u => u.UsuarioId.Equals(id)).ToList();
             }
         }
 
@@ -34,11 +44,37 @@ namespace DesafioConcrete.Infra.Repositorios
             }
         }
 
+        public string Atualizar(TEntidade classe)
+        {
+            using (var db = new EFContexto())
+            {                
+                db.Entry(classe).State = EntityState.Modified;
+
+                try
+                {
+                    db.SaveChanges();
+                    return "";
+                }
+                catch (Exception e)
+                {
+                    return e.Message;
+                }
+            }
+        }
+
         public bool VerificaExisteEmailCadastrado(string email)
         {
             using (var db = new EFContexto())
             {
-                return db.Usuario.Count(c => c.Email == email) > 0;
+                return db.Usuario.Count(u => u.Email.Equals(email)) > 0;
+            }
+        }
+
+        public bool VerificaSenhaCadastrada(string email, string senha)
+        {
+            using (var db = new EFContexto())
+            {
+                 return db.Usuario.Count(u => u.Email.Equals(email) && u.Senha.Equals(senha)) > 0;
             }
         }
     }

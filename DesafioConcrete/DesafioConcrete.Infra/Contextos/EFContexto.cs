@@ -16,6 +16,8 @@ namespace DesafioConcrete.Infra.Contextos
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            Configuration.ProxyCreationEnabled = false;
+
             modelBuilder.Configurations.Add(new UsuarioMap());
             modelBuilder.Configurations.Add(new TelefoneMap());
 
