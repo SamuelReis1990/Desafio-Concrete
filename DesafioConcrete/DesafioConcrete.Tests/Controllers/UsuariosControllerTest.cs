@@ -22,7 +22,7 @@ namespace DesafioConcrete.Tests.Controllers
             // Organizar                          
 
             // Agir
-            var result = _repositorioUsuario.GetAll();
+            var result = _repositorioUsuario.VerificaExisteEmailCadastrado("");
 
             // Declarar
             Assert.IsNotNull(result);

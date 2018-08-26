@@ -13,7 +13,7 @@ namespace DesafioConcrete.Infra.Mapeamentos
             Property(t => t.Id).HasColumnName("id");            
             Property(t => t.Nome).HasColumnName("nome").HasMaxLength(50);
             Property(t => t.Email).HasColumnName("email").HasMaxLength(50).IsRequired();
-            Property(t => t.Token).HasColumnName("token").HasMaxLength(128).IsRequired();
+            Property(t => t.Token).HasColumnName("token").HasMaxLength(256).IsRequired();
             Property(t => t.Senha).HasColumnName("senha").HasMaxLength(128).IsRequired();
             Property(t => t.DataCriacao).HasColumnName("data_criacao").IsOptional();
             Property(t => t.DataAtualizacao).HasColumnName("data_atualizacao").IsOptional();

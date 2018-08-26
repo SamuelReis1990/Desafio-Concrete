@@ -9,7 +9,16 @@ using System.Linq;
 namespace DesafioConcrete.Infra.Repositorios
 {
     public class RepositorioBase<TEntidade> : IRepositorioBase<TEntidade> where TEntidade : class
-    {        
+    {
+
+        public TEntidade RecuperarRegistro(string id)
+        {
+            using (var db = new EFContexto())
+            {
+                return db.Set<TEntidade>().Find(id);
+            }
+        }
+
         public Usuario RecuperarUsuario(string email)
         {
             using (var db = new EFContexto())

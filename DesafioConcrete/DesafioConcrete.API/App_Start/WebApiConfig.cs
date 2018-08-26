@@ -8,7 +8,7 @@ namespace DesafioConcrete.API
     {
         public static void Register(HttpConfiguration config)
         {
-            // Serviços e configuração da API da Web
+            // Serviços e configuração da API da Web            
 
             var formatters = GlobalConfiguration.Configuration.Formatters;
             var jsonFormatter = formatters.JsonFormatter;
@@ -17,7 +17,7 @@ namespace DesafioConcrete.API
             jsonFormatter.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.None;
             config.Formatters.Remove(config.Formatters.XmlFormatter);
             settings.Formatting = Formatting.Indented;
-            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();            
 
             // Rotas da API da Web
             config.MapHttpAttributeRoutes();
