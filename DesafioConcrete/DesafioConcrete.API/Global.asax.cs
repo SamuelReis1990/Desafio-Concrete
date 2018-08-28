@@ -1,5 +1,9 @@
-﻿using System;
+﻿using DesafioConcrete.API.Controllers;
+using System;
+using System.Web;
 using System.Web.Http;
+using System.Web.Http.Controllers;
+using System.Web.Http.Dispatcher;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -7,8 +11,14 @@ using System.Web.SessionState;
 
 namespace DesafioConcrete.API
 {
-    public class WebApiApplication : System.Web.HttpApplication
-    {
+    /// <summary>
+    /// 
+    /// </summary>
+    public class WebApiApplication : HttpApplication
+    {        
+        /// <summary>
+        /// 
+        /// </summary>
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -16,8 +26,14 @@ namespace DesafioConcrete.API
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerSelector), new HttpNotFoundAwareDefaultHttpControllerSelector(GlobalConfiguration.Configuration));
+            GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpActionSelector), new HttpNotFoundAwareControllerActionSelector());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Init()
         {
             this.PostAuthenticateRequest += Application_PostAuthorizeRequest;
@@ -26,7 +42,7 @@ namespace DesafioConcrete.API
 
         void Application_PostAuthorizeRequest(object sender, EventArgs e)
         {
-            System.Web.HttpContext.Current.SetSessionStateBehavior(
+            HttpContext.Current.SetSessionStateBehavior(
                 SessionStateBehavior.Required);
         }
     }

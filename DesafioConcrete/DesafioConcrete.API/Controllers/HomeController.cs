@@ -1,6 +1,4 @@
-﻿using System.Net;
-using System.Web.Http;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace DesafioConcrete.API.Controllers
 {
@@ -18,6 +16,6 @@ namespace DesafioConcrete.API.Controllers
             ViewBag.Title = "Home API Desafio Concrete";
 
             return View();
-        }
+        }       
     }
 }

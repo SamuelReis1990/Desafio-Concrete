@@ -1,8 +1,6 @@
-﻿using DesafioConcrete.API.Controllers;
-using DesafioConcrete.Dominio.Interfaces;
+﻿using DesafioConcrete.Dominio.Interfaces;
 using DesafioConcrete.Infra.Repositorios;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace DesafioConcrete.Tests.Controllers
 {

@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Ado.Net\ConexaoAdoNet.cs" />
     <Compile Include="Contextos\EFContexto.cs" />
     <Compile Include="Mapeamentos\TelefoneMap.cs" />
     <Compile Include="Mapeamentos\UsuarioMap.cs" />

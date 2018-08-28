@@ -219,6 +219,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NotFoundController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Enums\StatusCodeEnum.cs" />
     <Compile Include="Global.asax.cs">

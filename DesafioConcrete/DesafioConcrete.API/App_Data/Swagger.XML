@@ -4,6 +4,28 @@
         <name>DesafioConcrete.API</name>
     </assembly>
     <members>
+        <member name="T:DesafioConcrete.API.RouteConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DesafioConcrete.API.RouteConfig.RegisterRoutes(System.Web.Routing.RouteCollection)">
+            <summary>
+            
+            </summary>
+            <param name="routes"></param>
+        </member>
+        <member name="T:DesafioConcrete.API.WebApiConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DesafioConcrete.API.WebApiConfig.Register(System.Web.Http.HttpConfiguration)">
+            <summary>
+            
+            </summary>
+            <param name="config"></param>
+        </member>
         <member name="M:DesafioConcrete.API.Areas.HelpPage.ApiDescriptionExtensions.GetFriendlyId(System.Web.Http.Description.ApiDescription)">
             <summary>
             Generates an URI-friendly ID for the <see cref="T:System.Web.Http.Description.ApiDescription"/>. E.g. "Get-Values-id_name" instead of "GetValues/{id}?name={name}"
@@ -492,6 +514,52 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:DesafioConcrete.API.Controllers.NotFoundController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DesafioConcrete.API.Controllers.NotFoundController.Erro404">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:DesafioConcrete.API.Controllers.HttpNotFoundAwareDefaultHttpControllerSelector">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DesafioConcrete.API.Controllers.HttpNotFoundAwareDefaultHttpControllerSelector.#ctor(System.Web.Http.HttpConfiguration)">
+            <summary>
+            
+            </summary>
+            <param name="configuration"></param>
+        </member>
+        <member name="M:DesafioConcrete.API.Controllers.HttpNotFoundAwareDefaultHttpControllerSelector.SelectController(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DesafioConcrete.API.Controllers.HttpNotFoundAwareControllerActionSelector">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DesafioConcrete.API.Controllers.HttpNotFoundAwareControllerActionSelector.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DesafioConcrete.API.Controllers.HttpNotFoundAwareControllerActionSelector.SelectAction(System.Web.Http.Controllers.HttpControllerContext)">
+            <summary>
+            
+            </summary>
+            <param name="controllerContext"></param>
+            <returns></returns>
+        </member>
         <member name="T:DesafioConcrete.API.Controllers.UsuariosController">
             <summary>
             
@@ -542,6 +610,34 @@
             <response code="404">Not Found</response>
             <response code="500">Internal Server Error</response>
             <returns></returns>    
+        </member>
+        <member name="M:DesafioConcrete.API.Controllers.UsuariosController.ProfileAdoNet(System.String)">
+            <summary>
+            Perfil Usuário
+            </summary>
+            <param name="id"></param>
+            <remarks>Método perfil do usuário</remarks>
+            <response code="200">OK</response>                     
+            <response code="401">Unauthorized</response>    
+            <response code="403">Forbidden</response>
+            <response code="404">Not Found</response>
+            <response code="500">Internal Server Error</response>
+            <returns></returns>    
+        </member>
+        <member name="T:DesafioConcrete.API.WebApiApplication">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DesafioConcrete.API.WebApiApplication.Application_Start">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:DesafioConcrete.API.WebApiApplication.Init">
+            <summary>
+            
+            </summary>
         </member>
     </members>
 </doc>

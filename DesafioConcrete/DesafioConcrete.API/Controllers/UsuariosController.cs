@@ -1,12 +1,12 @@
 ﻿using DesafioConcrete.API.Enums;
+using DesafioConcrete.API.Jwt;
 using DesafioConcrete.API.Models;
+using DesafioConcrete.API.Utils;
 using DesafioConcrete.Dominio.Entidades;
 using DesafioConcrete.Dominio.Interfaces;
 using System;
 using System.Linq;
 using System.Web.Http;
-using DesafioConcrete.API.Utils;
-using DesafioConcrete.API.Jwt;
 
 namespace DesafioConcrete.API.Controllers
 {
@@ -34,7 +34,7 @@ namespace DesafioConcrete.API.Controllers
         {
             return new RetornoViewModel
             {
-                StatusCode = statusCode.ToString(),
+                StatusCode = statusCode,
                 Mensagem = mensagem,
                 Usuario = usuarioRetorno
             };
@@ -236,6 +236,83 @@ namespace DesafioConcrete.API.Controllers
                 {
                     var usuarioRetorno = _repositorioUsuario.RecuperarRegistro(id);
                     var telefonesRetorno = _repositorioTelefone.RecuperarTelefones(id);
+
+                    if (usuarioRetorno == null)
+                    {
+                        return Retorno(null, (int)StatusCodeEnum.NotFound, StatusCodeEnum.NotFound.ToString() + ": Usuário não encontrado!");
+                    }
+
+                    if (usuarioRetorno.Token.Equals(token))
+                    {
+                        TimeSpan tempo = DateTime.Now - usuarioRetorno.UltimoLogin;
+
+                        if (tempo.Minutes > 30)
+                        {
+                            return Retorno(null, (int)StatusCodeEnum.Unauthorized, StatusCodeEnum.Unauthorized.ToString() + ": Sessão inválida!");
+                        }
+                    }
+                    else
+                    {
+                        return Retorno(null, (int)StatusCodeEnum.Forbidden, StatusCodeEnum.Forbidden.ToString() + ": Não autorizado!");
+                    }
+
+                    RetornoUsuarioViewModel retorno = new RetornoUsuarioViewModel()
+                    {
+                        Nome = usuarioRetorno.Nome,
+                        Email = usuarioRetorno.Email,
+                        Senha = usuarioRetorno.Senha,
+                        Telefones = telefonesRetorno.Select(t => new TelefoneViewModel
+                        {
+                            DDD = t.DDD.ToString(),
+                            Numero = t.Numero.ToString()
+                        }).ToList(),
+                        Id = usuarioRetorno.Id,
+                        DataCriacao = usuarioRetorno.DataCriacao,
+                        DataAtualizacao = usuarioRetorno.DataAtualizacao,
+                        UltimoLogin = usuarioRetorno.UltimoLogin,
+                        Token = usuarioRetorno.Token
+                    };
+
+                    return Retorno(retorno, (int)StatusCodeEnum.OK, StatusCodeEnum.OK.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                return Retorno(null, (int)StatusCodeEnum.InternalServerError, StatusCodeEnum.InternalServerError.ToString() + ": " + e.Message);
+            }
+        }
+
+        #endregion
+
+        #region ProfileAdoNet
+
+        /// <summary>
+        /// Perfil Usuário
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks>Método perfil do usuário</remarks>
+        /// <response code="200">OK</response>                     
+        /// <response code="401">Unauthorized</response>    
+        /// <response code="403">Forbidden</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="500">Internal Server Error</response>
+        /// <returns></returns>    
+        [JwtAutorizacao]
+        [HttpGet, Route("adoNet/profile")]
+        public RetornoViewModel ProfileAdoNet(string id)
+        {
+            try
+            {
+                var token = System.Web.HttpContext.Current.Session["Token"].ToString();
+
+                if (String.IsNullOrEmpty(token))
+                {
+                    return Retorno(null, (int)StatusCodeEnum.Unauthorized, StatusCodeEnum.Unauthorized.ToString() + ": Não autorizado!");
+                }
+                else
+                {
+                    var usuarioRetorno = _repositorioUsuario.RecuperarUsuarioAdoNet(id);
+                    var telefonesRetorno = _repositorioTelefone.RecuperaTelefonesAdoNet(id);
 
                     if (usuarioRetorno == null)
                     {
